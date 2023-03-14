@@ -1,4 +1,4 @@
-package com.ll.basic1;
+package com.ll.basic1.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,8 +1,7 @@
-package com.ll.basic1;
+package com.ll.basic1.Controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.ll.basic1.Util.CarV2;
+import com.ll.basic1.Util.Person;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,8 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static javax.swing.UIManager.put;
-
 @Controller
 public class HomeController {
 
@@ -23,6 +20,10 @@ public class HomeController {
     public HomeController() {
         count = -1;
     }
+
+    List<Person> peoples = new ArrayList<Person>();
+
+    int p_count = 1;
 
 
     @GetMapping("/home/main")       //이러한 요청이 오면
@@ -167,25 +168,47 @@ public class HomeController {
     }
 
 
-    ArrayList<Person> peoples = new ArrayList<Person>();
-
-    int p_count = 0;
-
     @GetMapping("/home/addPerson")       //이러한 요청이 오면
     @ResponseBody                   //아래의 매소드를 실행한 후, 그 리턴값을 응답으로 처리해줘
-    public String showPerson(@RequestParam String name, @RequestParam String age) {
+    public String addPerson(@RequestParam String name, @RequestParam int age) {
 
-        peoples.add(new Person(name, age));
+        peoples.add(new Person(p_count, age, name));
 
-        p_count ++;
-
-        return Integer.toString(p_count) + " 번 사람이 추가되었습니다.";
+        return Integer.toString(p_count++) + " 번 사람이 추가되었습니다.";
     }
 
+    //리스트를 출력한 경우
     @GetMapping("/home/people")       //이러한 요청이 오면
     @ResponseBody                   //아래의 매소드를 실행한 후, 그 리턴값을 응답으로 처리해줘
-    public ArrayList<Person> showPeoples() {
+    public List<Person> showPeoples() {
         return peoples;
+    }
+
+    @GetMapping("/home/removePerson")
+    @ResponseBody
+    public String removePerson(@RequestParam int id)
+    {
+
+        // person -> person.getId() == id
+        // 위 함수가 참인 엘리먼트(요소) 가 존재한다면, 해당 요소를 삭제한다.
+        //removed 에는 삭제 수행 여부(T/F)가 저장된다.
+
+        //peoples.remove(new Person(id, age, name));
+
+        if(peoples.removeIf(person -> person.getId() == id))
+        {
+            return "id : " + Integer.toString(id) + "번 사용자가 삭제되었습니다.";
+        }
+        else
+        {
+            return "삭제할 id가 유효하지 않습니다.";
+        }
+
+        //스트림 안쓰는 경우(유효 O)
+//        for ( Person p : people ) {
+//            if ( p.getId() == id ) people.remove(p);
+//        }
+
     }
 
 
