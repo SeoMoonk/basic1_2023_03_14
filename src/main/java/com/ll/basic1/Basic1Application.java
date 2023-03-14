@@ -12,7 +12,5 @@ public class Basic1Application {
 	public static void main(String[] args) {
 
 		SpringApplication.run(Basic1Application.class, args);
-
 	}
-
 }

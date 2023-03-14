@@ -1,16 +1,16 @@
 package com.ll.basic1;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class Person {
 
-    @Getter
     String name;
-    @Getter
     String age;
 
-    public Person(String name, String age) {
-        this.name = name;
-        this.age = age;
-    }
 }
