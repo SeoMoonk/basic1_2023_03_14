@@ -14,9 +14,9 @@ public class Person {
 
     private static int lastId;
 
-    private final int id;
-    private final int age;
-    private final String name;
+    private int id;
+    private int age;
+    private String name;
 
 
     static {

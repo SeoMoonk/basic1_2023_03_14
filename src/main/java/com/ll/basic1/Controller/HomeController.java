@@ -208,6 +208,28 @@ public class HomeController {
 //        for ( Person p : people ) {
 //            if ( p.getId() == id ) people.remove(p);
 //        }
+    }
+
+    @GetMapping("/home/modifyPerson")       //이러한 요청이 오면
+    @ResponseBody                   //아래의 매소드를 실행한 후, 그 리턴값을 응답으로 처리해줘
+    public String modifyPerson(int id, String name, int age) {
+
+        Person found = peoples
+                .stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
+
+
+        if(found == null)
+        {
+            return "%d번 사람이 존재하지 않습니다.".formatted(id);
+        }
+
+        found.setName(name);
+        found.setAge(age);
+
+        return "%d 번 사람이 수정되었습니다.".formatted(id);
 
     }
 
