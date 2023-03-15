@@ -1,10 +1,12 @@
 package com.ll.basic1.boundedContext.member.repository;
 
 import com.ll.basic1.boundedContext.member.entity.Member;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class MemberRepository {
 
     private List<Member> members;
@@ -32,4 +34,13 @@ public class MemberRepository {
                 .findFirst()
                 .orElse(null);
     }
+
+    public Member findById(long id) {
+        return members
+                .stream()
+                .filter(m -> m.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
 }

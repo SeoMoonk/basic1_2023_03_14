@@ -21,18 +21,21 @@ public class HomeController {
 
     private int count;
 
-    @Autowired
-    private MemberService memberService;
+    private final List<Person> peoples;
 
-    public HomeController() {
+    //필드 주입
+    //@Autowired
+    private final MemberService memberService;
+
+    public HomeController(MemberService memberService) {
         count = -1;
+        peoples = new ArrayList<>();
+        this.memberService = memberService;
+
     }
 
-    List<Person> peoples = new ArrayList<Person>();
 
     int p_count = 1;
-
-
 
 
     @GetMapping("/home/main")       //이러한 요청이 오면
