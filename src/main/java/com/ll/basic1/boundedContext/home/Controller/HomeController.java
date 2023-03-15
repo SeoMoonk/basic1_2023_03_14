@@ -1,4 +1,4 @@
-package com.ll.basic1.Controller;
+package com.ll.basic1.boundedContext.home.Controller;
 
 import com.ll.basic1.Util.CarV2;
 import com.ll.basic1.Util.Person;
@@ -233,35 +233,51 @@ public class HomeController {
         return "%d 번 사람이 수정되었습니다.".formatted(id);
     }
 
-
+    // 이 함수와 아래 showReqAndRespV2 함수는 똑같이 작동한다.
     @GetMapping("/home/reqAndResp")
-    @ResponseBody                      //받은 내용        /      보낼 내용
+    @ResponseBody
     public void showReqAndResp(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        int age = Integer.parseInt(req.getParameter("age"));
-        resp.getWriter().append("Your age is %d, right?".formatted(age));
+        int age = Integer.parseInt(req.getParameter("age").replaceAll(" ", ""));
+        resp.getWriter().append("Hello, you're %d years old.".formatted(age));
     }
+
+    // 이 방식이 가능한 이유는 스프링부트가 배후에서 처리를 해주기 때문이다.(이 방식이 코딩하기 더 편하다.)
+    @GetMapping("/home/reqAndRespV2")
+    @ResponseBody
+    public String showReqAndRespV2(int age) {
+        return "Hello, you're %d years old.".formatted(age);
+    }
+
 
     @GetMapping("/home/cookie/increase")
     @ResponseBody
-    public int showCookieIncrease(HttpServletRequest req, HttpServletResponse resp) throws IOException { // 리턴되는 int 값은 String 화 되어서 고객(브라우저)에게 전달된다.
+    public int showCookieIncrease(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // 리턴되는 int 값은 String 화 되어서 고객(브라우저)에게 전달된다.
+
         int countInCookie = 0;
 
-        if (req.getCookies() != null) {
+        //고객이 가져온 쿠폰에서 count 쿠폰을 찾고, 그 쿠폰의 값을 가져온다.
+        //전의 쿠키 값이 없다면? -> 0에서 1을 더한 새로운 쿠키를 넣어 반환해준다.
+        if(req.getCookies() != null)
+        {
             countInCookie = Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals("count"))
-                    .map(cookie -> cookie.getValue())
-                    .mapToInt(Integer::parseInt)
-                    .findFirst()
-                    .orElse(0);
+                    .filter(cookie -> cookie.getName().equals("count"))     //쿠키들 중에 count 라는 친구가 있으면
+                    .map(Cookie::getValue)                                  //그 쿠기의 값을 얻어 오고
+                    .mapToInt(Integer::parseInt)                            //int형으로 변환해준다.
+                    .findFirst()                                            //finrFirse() -> filter 조건에 일치하는 element 1개를 Optional로 리턴.
+                    .orElse(0);                                      //조건에 일치하는게 없다면 0 반환.
         }
 
-        int newCountInCookie = countInCookie + 1;
+        int newCountInCookie = countInCookie +1;
 
+        //고객이 가져온 count 쿠폰 값에 1을 더한 쿠폰을 만들어서 고객에게 보낸다.
+        //쉽게 말하면 브라우저(고객)에 저장되어 있는 count 쿠폰의 값을 1 증가시킨다.
+        //일렇게 브라우저의 쿠키값을 변경하면 재방문시에 스프링부트가 다시 그 값을 받게 되어 있다.
         resp.addCookie(new Cookie("count", newCountInCookie + ""));
 
+        //응답하는 내용
         return newCountInCookie;
     }
-
 
 }
 
