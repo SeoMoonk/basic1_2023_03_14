@@ -2,9 +2,12 @@ package com.ll.basic1.boundedContext.home.Controller;
 
 import com.ll.basic1.Util.CarV2;
 import com.ll.basic1.Util.Person;
+import com.ll.basic1.boundedContext.member.entity.Member;
+import com.ll.basic1.boundedContext.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +21,9 @@ public class HomeController {
 
     private int count;
 
+    @Autowired
+    private MemberService memberService;
+
     public HomeController() {
         count = -1;
     }
@@ -25,6 +31,8 @@ public class HomeController {
     List<Person> peoples = new ArrayList<Person>();
 
     int p_count = 1;
+
+
 
 
     @GetMapping("/home/main")       //이러한 요청이 오면
@@ -277,6 +285,12 @@ public class HomeController {
 
         //응답하는 내용
         return newCountInCookie;
+    }
+
+    @GetMapping("/home/user1")
+    @ResponseBody
+    public Member showUser1() {
+        return memberService.findByUsername("user1");
     }
 
 }

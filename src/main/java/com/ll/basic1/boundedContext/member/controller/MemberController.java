@@ -2,6 +2,7 @@ package com.ll.basic1.boundedContext.member.controller;
 
 import com.ll.basic1.base.rsData.RsData;
 import com.ll.basic1.boundedContext.member.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,8 +14,9 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    public MemberController() {
-        memberService = new MemberService();
+    @Autowired
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @GetMapping("/member/login_1")
@@ -32,11 +34,11 @@ public class MemberController {
     @ResponseBody
     public RsData loginV2(String username, String password){
 
-        if ( username == null || username.trim().length() == 0 ) {
+        if (username == null || username.trim().length() == 0) {
             return RsData.of("F-3", "username(을)를 입력해주세요.");
         }
 
-        if ( password == null || password.trim().length() == 0 ) {
+        if (password == null || password.trim().length() == 0) {
             return RsData.of("F-4", "password(을)를 입력해주세요.");
         }
 
