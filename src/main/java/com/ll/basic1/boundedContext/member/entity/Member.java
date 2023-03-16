@@ -23,5 +23,4 @@ public class Member {
         this.user_pwd = user_pwd;
     }
 
-
 }

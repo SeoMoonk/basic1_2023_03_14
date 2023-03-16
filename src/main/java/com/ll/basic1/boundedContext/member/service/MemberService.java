@@ -47,6 +47,4 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
-
-
 }

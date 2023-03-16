@@ -6,26 +6,29 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 
+@Controller
+@RequestScope           //이 객체는 매 요청마다 생성된다.
 @AllArgsConstructor
 public class Rq {
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
 
     public boolean removeCookie(String name) {
-        if (req.getCookies() != null) {
-            Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals(name))
-                    .forEach(cookie -> {
-                        cookie.setMaxAge(0);
-                        resp.addCookie(cookie);
-                    });
+        Cookie cookie = Arrays.stream(req.getCookies())
+                .filter(c -> c.getName().equals(name))
+                .findFirst()
+                .orElse(null);
 
-            return Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals(name))
-                    .count() > 0;
+            if(cookie != null) {
+                cookie.setMaxAge(0);
+                resp.addCookie(cookie);
+
+                return true;
         }
 
         return false;

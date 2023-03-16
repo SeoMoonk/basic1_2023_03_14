@@ -23,7 +23,6 @@ public class HomeController {
 
     private final List<Person> peoples;
 
-    //필드 주입
     //@Autowired
     private final MemberService memberService;
 
