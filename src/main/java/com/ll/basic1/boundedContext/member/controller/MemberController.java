@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static org.springframework.web.util.WebUtils.getCookie;
+
 @Controller
 public class MemberController {
 
@@ -37,7 +39,9 @@ public class MemberController {
 
     @GetMapping("/member/login")
     @ResponseBody
-    public RsData loginV2(String username, String password, HttpServletResponse resp){
+    public RsData loginV2(String username, String password, HttpServletRequest req, HttpServletResponse resp){
+
+        Rq rq = new Rq(req, resp);
 
         if (username == null || username.trim().length() == 0) {
             return RsData.of("F-3", "username(을)를 입력해주세요.");
@@ -55,8 +59,9 @@ public class MemberController {
         // memberrepository의 findbyusername 메소드를 실행시킨다.
 
         if(rsData.isSuccess()) {
+            Member member = (Member) rsData.getData();
             long memberId = (long) rsData.getData();
-            resp.addCookie(new Cookie("loginedMemberId", memberId + ""));
+            rq.setCookie("loginedMemberId", member.getId());
         }
 
         return rsData;
@@ -73,26 +78,18 @@ public class MemberController {
 
     @GetMapping("/member/me")
     @ResponseBody
-    public RsData showMe(HttpServletRequest req) {
-        long loginedMemberId = 0;
+    public RsData showMe(HttpServletRequest req, HttpServletResponse resp) {
+        Rq rq = new Rq(req, resp);
 
-        if (req.getCookies() != null) {
-            loginedMemberId = Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals("loginedMemberId"))
-                    .map(Cookie::getValue)
-                    .mapToInt(Integer::parseInt)
-                    .findFirst()
-                    .orElse(0);
-        }
+        long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
 
         boolean isLogined = loginedMemberId > 0;
 
         if (isLogined == false)
             return RsData.of("F-1", "로그인 후 이용해주세요.");
-
         Member member = memberService.findById(loginedMemberId);
-
         return RsData.of("S-1", "당신의 username(은)는 %s 입니다.".formatted(member.getUser_id()));
 
     }
+
 }

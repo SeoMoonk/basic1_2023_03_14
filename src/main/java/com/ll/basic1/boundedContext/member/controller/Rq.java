@@ -3,43 +3,64 @@ package com.ll.basic1.boundedContext.member.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 
 import java.util.Arrays;
 
+@AllArgsConstructor
 public class Rq {
-
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
 
-    public Rq(HttpServletRequest req, HttpServletResponse resp) {
-        this.req = req;
-        this.resp = resp;
-    }
-
-    public void removeCookie(String name) {
-
+    public boolean removeCookie(String name) {
         if (req.getCookies() != null) {
             Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals("loginedMemberId"))
+                    .filter(cookie -> cookie.getName().equals(name))
                     .forEach(cookie -> {
                         cookie.setMaxAge(0);
                         resp.addCookie(cookie);
                     });
+
+            return Arrays.stream(req.getCookies())
+                    .filter(cookie -> cookie.getName().equals(name))
+                    .count() > 0;
+        }
+
+        return false;
+    }
+
+    public String getCookie(String name, String defaultValue) {
+        if ( req.getCookies() == null ) return defaultValue;
+
+        return Arrays.stream(req.getCookies())
+                .filter(cookie -> cookie.getName().equals(name))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(defaultValue);
+    }
+
+    public long getCookieAsLong(String name, long defaultValue) {
+        String value = getCookie(name, null);
+
+        if ( value == null ) {
+            return defaultValue;
+        }
+
+        try {
+            return Long.parseLong(value);
+        }
+        catch ( NumberFormatException e ) {
+            return defaultValue;
         }
     }
 
-    public void setCookie(long id)
-    {
-        if(req.getCookies() != null){
-            Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getMaxAge().equals(1))
-                    .forEach(cookie -> {
-
-                    });
-        }
-
+    public void setCookie(String name, long value) {
+        setCookie(name, value + "");
     }
 
+    public void setCookie(String name, String value) {
+        resp.addCookie(new Cookie(name, value));
+    }
 }
