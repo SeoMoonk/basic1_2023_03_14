@@ -1,5 +1,9 @@
 <h1>로그인</h1>
-<form action="doLogin">
+
+<!-- GET 메소드 방식은 URL 뒤에 파라미터가 남지만, POST 메소드 방식은 뒤에 파라미터가 남지 않는다.
+       일반우편(GET : 조회 느낌) / 빠른등기(POST : 생성 느낌) - 글쓰기, ...
+-->
+<form method="POST" action="doLogin">
     <input type="text" placeholder="아이디" name="username">
     <input type="password" placeholder="비밀번호" name="password">
     <input type="submit" value="로그인">

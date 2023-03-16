@@ -8,6 +8,7 @@ import com.ll.basic1.boundedContext.member.service.MemberService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -28,12 +29,13 @@ public class MemberController {
         return "구식 로그인";
     }
 
+    //여기 아래의 두 메소드는 매핑 url이 같은데, 매핑 방식이 GET, POST로 다르기 때문에 가능한 일이다.
     @GetMapping("/member/login")
     public String showLogin() {
         return "usr/member/login";
     }
 
-    @GetMapping("/member/dologin")
+    @PostMapping("/member/login")
     @ResponseBody
     public RsData loginV2(String username, String password){
 
