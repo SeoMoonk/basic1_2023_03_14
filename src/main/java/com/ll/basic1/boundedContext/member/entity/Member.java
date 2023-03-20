@@ -12,10 +12,12 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 public class Member {
 
     @Id //PRIMARY KEY
